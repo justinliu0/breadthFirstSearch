@@ -1,5 +1,3 @@
-let mode = "wall";
-
 const runButton = document.getElementById("runButton");
 const setStart = document.getElementById("setStart");
 const setGoal = document.getElementById("setGoal");
@@ -8,9 +6,22 @@ const gridSize = document.getElementById("gridSize");
 const applySize = document.getElementById("apply");
 const container = document.querySelector(".container");
 
+let mode = "wall";
+
 setWall.addEventListener("click", () => mode = "wall");
 setStart.addEventListener("click", () => mode = "start");
 setGoal.addEventListener("click", () => mode = "goal");
+
+function getGridSize() {
+    let size = parseInt(gridSize.value);
+    if (size < 3) {
+        size = 3;
+    }
+    if (size > 16) {
+        size = 16;
+    }
+    return size;
+}
 
 function createGrid(size) {
     container.innerHTML = "";
@@ -25,41 +36,36 @@ function createGrid(size) {
             box.classList.add("box");
             box.dataset.row = row;
             box.dataset.col = col;
-            box.style.width = "50px";
-            box.style.height = "50px";
-            box.style.border = "1px solid #000";
-            box.style.backgroundColor = "#eee";
 
             if (row === 0 && col === 0) {
                 box.classList.add("start");
-                box.style.backgroundColor = "green";
-            } else if (row === size - 1 && col === size - 1) {
+            }
+            else if (row === size - 1 && col === size - 1) {
                 box.classList.add("goal");
-                box.style.backgroundColor = "red";
             }
 
             box.addEventListener("click", () => {
                 switch(mode) {
                     case "wall":
-                        box.style.backgroundColor = box.style.backgroundColor === "black" ? "#eee" : "black";
+                        if (!box.classList.contains("start") && !box.classList.contains("goal")) {
+                            box.classList.toggle("wall");
+                        }
                         break;
                     case "start":
                         const prevStart = document.querySelector(".start");
                         if (prevStart) {
                             prevStart.classList.remove("start");
-                            prevStart.style.backgroundColor = "#eee";
                         }
                         box.classList.add("start");
-                        box.style.backgroundColor = "green";
+                        box.classList.remove("wall", "goal");
                         break;
                     case "goal":
                         const prevGoal = document.querySelector(".goal");
                         if (prevGoal) {
                             prevGoal.classList.remove("goal");
-                            prevGoal.style.backgroundColor = "#eee";
                         }
                         box.classList.add("goal");
-                        box.style.backgroundColor = "red";
+                        box.classList.remove("wall", "start");
                         break;
                 }
             });
@@ -69,11 +75,30 @@ function createGrid(size) {
     }
 }
 
-createGrid(parseInt(gridSize.value));
+function getGridArray() {
+    const size = getGridSize();
+    const grid = [];
 
-applySize.addEventListener("click", () => {
-    let size = parseInt(gridSize.value);
-    if (size < 3) size = 3;
-    if (size > 16) size = 16;
-    createGrid(size);
-});
+    for (let row = 0; row < size; row++) {
+        const r = [];
+        for (let col = 0; col < size; col++) {
+            const box = document.querySelector(`.box[data-row='${row}'][data-col='${col}']`);
+            if (box.classList.contains("start")) {
+                r.push("S");
+            }
+            else if (box.classList.contains("goal")) {
+                r.push("G");
+            }
+            else if (box.classList.contains("wall")) {
+                r.push("W");
+            }
+            else {
+                r.push(0);
+            }
+        }
+        grid.push(r);
+    }
+
+    return grid;
+}
+
