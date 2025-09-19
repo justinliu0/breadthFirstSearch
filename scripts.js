@@ -12,23 +12,11 @@ setWall.addEventListener("click", () => mode = "wall");
 setStart.addEventListener("click", () => mode = "start");
 setGoal.addEventListener("click", () => mode = "goal");
 
-function getGridSize() {
-    let size = parseInt(gridSize.value);
-    if (size < 3) {
-        size = 3;
-    }
-    if (size > 16) {
-        size = 16;
-    }
-    return size;
-}
-
 function createGrid(size) {
     container.innerHTML = "";
     container.style.display = "grid";
     container.style.gridTemplateColumns = `repeat(${size}, 50px)`;
     container.style.gridTemplateRows = `repeat(${size}, 50px)`;
-    container.style.gap = "4px";
 
     for (let row = 0; row < size; row++) {
         for (let col = 0; col < size; col++) {
@@ -75,22 +63,36 @@ function createGrid(size) {
     }
 }
 
+function getGridSize() {
+    let size = parseInt(gridSize.value);
+    if (size < 3) {
+        size = 3;
+    }
+    if (size > 16) {
+        size = 16;
+    }
+    return size;
+}
+
 function getGridArray() {
     const size = getGridSize();
     const grid = [];
+    let start, goal;
 
     for (let row = 0; row < size; row++) {
         const r = [];
         for (let col = 0; col < size; col++) {
             const box = document.querySelector(`.box[data-row='${row}'][data-col='${col}']`);
             if (box.classList.contains("start")) {
-                r.push("S");
+                r.push(3);
+                start = [row, col];
             }
             else if (box.classList.contains("goal")) {
-                r.push("G");
+                r.push(2);
+                goal = [row, col];
             }
             else if (box.classList.contains("wall")) {
-                r.push("W");
+                r.push(1);
             }
             else {
                 r.push(0);
@@ -98,7 +100,43 @@ function getGridArray() {
         }
         grid.push(r);
     }
-
-    return grid;
+    return {grid, start, goal};
 }
 
+async function bfs() {
+    const {grid, start, goal} = getGridArray();
+    const visited = [];
+    const prev = [];
+
+    for (let row = 0; row < getGridSize(); row++) {
+        const r = [];
+        for (let col = 0; col < getGridSize(); col++) {
+            r.push(false);
+        }
+        visited.push(r);
+    }
+
+    for (let row = 0; row < getGridSize(); row++) {
+        const r = [];
+        for (let col = 0; col < getGridSize(); col++) {
+            r.push(null);
+        }
+        prev.push(r);
+    }
+
+    const queue = [start];
+    visited[start[0]][start[1]] = true;
+
+    while (queue.length > 0) {
+        const [row, col] = queue.shift();
+
+        if (row === goal[0] && col === goal[1]) {
+            break;
+        }
+    }
+
+}
+
+createGrid(getGridSize());
+applySize.addEventListener("click", () => createGrid(getGridSize()));
+runButton.addEventListener("click", bfs);

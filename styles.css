@@ -5,10 +5,15 @@
 .goal {
     background-color: #00cc00;
 }
+
 .wall {
     background-color: #000;
 }
 
 .visited {
     background-color: #aaaaee;
+}
+
+.path {
+    background-color: #ffee11;
 }
