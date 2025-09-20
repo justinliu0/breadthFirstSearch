@@ -14,7 +14,6 @@ setGoal.addEventListener("click", () => mode = "goal");
 
 function createGrid(size) {
     container.innerHTML = "";
-    container.style.display = "grid";
     container.style.gridTemplateColumns = `repeat(${size}, 50px)`;
     container.style.gridTemplateRows = `repeat(${size}, 50px)`;
 

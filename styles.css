@@ -1,3 +1,10 @@
+.container {
+    display: grid; 
+    justify-content: center; 
+    align-content: center;   
+    gap: 4px; 
+}
+
 .box {
     background-color: #ccc;
     border: 2px solid #000;
