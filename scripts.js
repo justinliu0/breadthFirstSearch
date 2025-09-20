@@ -4,7 +4,7 @@ const setGoal = document.getElementById("setGoal");
 const setWall = document.getElementById("setWall");
 const gridSize = document.getElementById("gridSize");
 const applySize = document.getElementById("apply");
-const container = document.querySelector(".container");
+const grid = document.getElementById("grid");
 
 let mode = "wall";
 
@@ -13,9 +13,9 @@ setStart.addEventListener("click", () => mode = "start");
 setGoal.addEventListener("click", () => mode = "goal");
 
 function createGrid(size) {
-    container.innerHTML = "";
-    container.style.gridTemplateColumns = `repeat(${size}, 50px)`;
-    container.style.gridTemplateRows = `repeat(${size}, 50px)`;
+    grid.innerHTML = "";
+    grid.style.gridTemplateColumns = `repeat(${size}, 50px)`;
+    grid.style.gridTemplateRows = `repeat(${size}, 50px)`;
 
     for (let row = 0; row < size; row++) {
         for (let col = 0; col < size; col++) {
@@ -59,7 +59,7 @@ function createGrid(size) {
                 }
             });
 
-            container.appendChild(box);
+            grid.appendChild(box);
         }
     }
 }
