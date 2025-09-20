@@ -33,6 +33,8 @@ function createGrid(size) {
             }
 
             box.addEventListener("click", () => {
+                clearPath();
+                
                 switch(mode) {
                     case "wall":
                         if (!box.classList.contains("start") && !box.classList.contains("goal")) {
@@ -72,6 +74,12 @@ function getGridSize() {
         size = 16;
     }
     return size;
+}
+
+function clearPath() {
+    document.querySelectorAll(".visited, .path").forEach(box => {
+        box.classList.remove("visited", "path");
+    });
 }
 
 function getGridArray() {
@@ -114,6 +122,8 @@ async function bfs() {
         [1, 0],
         [-1, 0]
     ]
+
+    clearPath();
 
     for (let row = 0; row < size; row++) {
         const r = [];

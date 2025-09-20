@@ -1,4 +1,9 @@
-.start{
+.box {
+    background-color: #ccc;
+    border: 2px solid #000;
+}
+
+.start {
     background-color: #ff0000;
 }
 
