@@ -105,12 +105,19 @@ function getGridArray() {
 
 async function bfs() {
     const {grid, start, goal} = getGridArray();
+    const size = getGridSize();
     const visited = [];
     const prev = [];
+    const adjacent = [
+        [0, 1],
+        [0, -1],
+        [1, 0],
+        [-1, 0]
+    ]
 
-    for (let row = 0; row < getGridSize(); row++) {
+    for (let row = 0; row < size; row++) {
         const r = [];
-        for (let col = 0; col < getGridSize(); col++) {
+        for (let col = 0; col < size; col++) {
             r.push(false);
         }
         visited.push(r);
@@ -132,6 +139,45 @@ async function bfs() {
 
         if (row === goal[0] && col === goal[1]) {
             break;
+        }
+
+        for (const [rowDelta, colDelta] of adjacent) {
+            const newRow = row + rowDelta;
+            const newCol = col + colDelta;
+
+            if (
+                newRow >= 0 && newRow < size &&
+                newCol >= 0 && newCol < size &&
+                !visited[newRow][newCol] &&
+                grid[newRow][newCol] !== 1
+            ) {
+                queue.push([newRow, newCol]);
+                visited[newRow][newCol] = true;
+                prev[newRow][newCol] = [row, col];
+
+                const box = document.querySelector(`.box[data-row='${newRow}'][data-col='${newCol}']`);
+                if (!box.classList.contains("start") && !box.classList.contains("goal")) {
+                    box.classList.add("visited");
+                }
+                await new Promise(r => setTimeout(r, 50));
+            }
+        }
+    }
+
+    let path = [];
+    let current = goal;
+
+    while (current) {
+        path.push(current);
+        current = prev[current[0]][current[1]];
+    }
+    path.reverse(); 
+
+    for (const [row, col] of path) {
+        const box = document.querySelector(`.box[data-row='${row}'][data-col='${col}']`);
+        if (!box.classList.contains("start") && !box.classList.contains("goal")) {
+            box.classList.add("path");
+            await new Promise(r => setTimeout(r, 50));
         }
     }
 
